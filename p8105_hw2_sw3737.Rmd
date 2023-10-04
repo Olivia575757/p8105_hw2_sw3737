@@ -46,3 +46,13 @@ merged_data <- cleaned_pols %>%
   left_join(cleaned_snp, by = c("year", "month")) %>%
   left_join(tidied_unemployment, by = c("year", "month"))
 ```
+
+### Data description
+
+pols-month.csv: This dataset provides insight into the `distribution of national politicians`, whether democratic or republican, across various roles like president, governor, senator, and representative. The dataset has a temporal component indicated by the mon variable.
+
+snp.csv: This dataset tracks the `closing values of the Standard & Poor’s stock market index`, providing a gauge on the stock market's performance over time.
+
+unemployment.csv: This dataset focuses on `unemployment rates`, segmented by month, over multiple years. This offers a view into the country's economic health and labor market trends.
+
+The merged dataset, merged_data, seamlessly combines data from all three sources, linking them by year and month. With columns indicating `political distribution`, `stock market performance`, and `unemployment rates`, this dataset provides a comprehensive overview, facilitating an in-depth analysis of interrelationships between politics, the stock market, and unemployment.

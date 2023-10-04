@@ -33,3 +33,16 @@ cleaned_snp <- snp_data %>%
   select(year, month, everything()) %>%
   arrange(year, month)
 ```
+
+```{r unemployment cleaning}
+tidied_unemployment <- unemployment_data %>%
+  rename(year = Year) %>%
+  gather(key = "month", value = "unemployment_rate", -year) %>%
+  mutate(month = match(month, month.abb))
+```
+
+```{r merging}
+merged_data <- cleaned_pols %>%
+  left_join(cleaned_snp, by = c("year", "month")) %>%
+  left_join(tidied_unemployment, by = c("year", "month"))
+```

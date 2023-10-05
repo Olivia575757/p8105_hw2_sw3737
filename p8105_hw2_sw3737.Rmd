@@ -69,6 +69,7 @@ mtw_data <- read_excel("data_files_hw2/202309 Trash Wheel Collection Data.xlsx",
   janitor::clean_names() %>%
   drop_na(dumpster) %>%
   mutate(
+    year=as.numeric(year),
     homes_powered = (500 * weight_tons)/30,
     wheel_name = "Mr. Trash Wheel"
   )
@@ -95,3 +96,13 @@ gwynnda_data <- read_excel("data_files_hw2/202309 Trash Wheel Collection Data.xl
     wheel_name = "Gwynnda Trash Wheel"
   )
 ```
+
+# Combine with the Mr. Trash Wheel dataset to produce a single tidy dataset
+
+```{r combine}
+trashwheel_df = bind_rows(mtw_data, ptw_data, gwynnda_data) |> select(wheel_name = "wheel_name", everything())
+```
+
+# Data description
+
+The Trash Wheel dataset consists of observations from three unique Trash Wheels: Mr. Trash Wheel, Professor Trash Wheel, and Gwynnda. The combined dataset has a total of `845 observations` and `15 variables`, capturing various attributes, including `wheel_name`, `dumpster`, `month`, `year`, `date`, `weight_tons`, `volume_cubic_yard`, `plastic_bottles`, `polystyrene`, `cigarette_butts`, `glass_bottles`, `plastic_bags`, `wrappers`, `sports_balls`, and `home_powered`. A total weight of `216.26 tons of trash` was collected by Professor Trash Wheel. Gwynnda collected a total of `1.63^{4} cigarette butts` in July of 2021.

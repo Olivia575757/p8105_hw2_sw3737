@@ -152,3 +152,24 @@ mci_amyloid <- read_csv("data_files_hw2/mci_amyloid.csv", skip = 1)
   drop_na(baseline)
 ```
 
+# Data description
+
+The import process involved `using skip = 1` to skip the first line which is about description, `using pivot_longer` to reshape data from a "wide" format to a "long" format, and `case_match` to recoding the dataset.
+
+The longitudinal dataset had `r ncol(mci_amyloid)` columnss and `r nrow(mci_amyloid)` observations. The variables names include `r colnames(mci_amyloid)`.
+
+# Check for participant consistency
+```{r}
+baseline_check = anti_join(
+  baseline, mci_amyloid, by = "id")
+mci_amyloid_check = anti_join(
+  mci_amyloid, baseline, by = "id")
+baseline_mci_amyloid_check = inner_join(
+  baseline, mci_amyloid, by = "id")
+```
+
+The combined dataset includes `r nrow(baseline_mci_amyloid_check)` observations and `r ncol(baseline_mci_amyloid_check)` variables.
+
+```{r}
+write.csv(baseline_mci_amyloid_check, file = "./data_files_hw2/baseline_mci_amyloid_check.csv", row.names = FALSE)
+```

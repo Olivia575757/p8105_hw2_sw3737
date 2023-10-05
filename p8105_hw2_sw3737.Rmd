@@ -8,6 +8,7 @@ date: "2023-10-04"
 ```{r setup}
 library(tidyverse)
 library(readxl)
+library(readr)
 library(dplyr)
 ```
 
@@ -105,14 +106,14 @@ trashwheel_df = bind_rows(mtw_data, ptw_data, gwynnda_data) |> select(wheel_name
 
 # Data description
 
-The Trash Wheel dataset consists of observations from three unique Trash Wheels: Mr. Trash Wheel, Professor Trash Wheel, and Gwynnda. The combined dataset has a total of `r nrow(trashwheel_df)` observations and `r ncol(trashwheel_df)` variables, capturing various attributes, including `wheel_name`, `dumpster`, `month`, `year`, `date`, `weight_tons`, `volume_cubic_yard`, `plastic_bottles`, `polystyrene`, `cigarette_butts`, `glass_bottles`, `plastic_bags`, `wrappers`, `sports_balls`, and `home_powered`. A total weight of `r sum(ptw_data$weight_tons)` tons trash was collected by Professor Trash Wheel. Gwynnda collected a total of `r gwynnda_data%>%filter(month == 'July'&year == 2021)%>%summarize(sum = sum(cigarette_butts))%>%sum)` cigarette butts in July of 2021.
+The Trash Wheel dataset consists of observations from three unique Trash Wheels: Mr. Trash Wheel, Professor Trash Wheel, and Gwynnda. The combined dataset has a total of `r nrow(trashwheel_df)` observations and `r ncol(trashwheel_df)` variables, capturing various attributes, including `wheel_name`, `dumpster`, `month`, `year`, `date`, `weight_tons`, `volume_cubic_yard`, `plastic_bottles`, `polystyrene`, `cigarette_butts`, `glass_bottles`, `plastic_bags`, `wrappers`, `sports_balls`, and `home_powered`. A total weight of `r sum(ptw_data$weight_tons)` tons trash was collected by Professor Trash Wheel. Gwynnda collected a total of `r sum((gwynnda_data, year == "2021" & month == "July")$cigarette_butts)` cigarette butts in July of 2021.
 
 ## Problem 3
 
-# Importing and cleaning the baseline demographics dataset
+# Import and clean the baseline demographics dataset
 
 ```{r}
-baseline <- read.csv("data_files_hw2/MCI_baseline.csv") %>%
+baseline <- read.csv("data_files_hw2/MCI_baseline.csv", skip = 1) %>%
   janitor::clean_names() %>%
   mutate(sex = case_match(sex,
                           1 ~ "Male",
@@ -122,5 +123,32 @@ baseline <- read.csv("data_files_hw2/MCI_baseline.csv") %>%
                             1 ~ "APOE4 carrier",
                             0 ~ "APOE4 non-carrier"),
          apoe4 = as.factor(apoe4)) %>%
-  filter(age_at_onset == "." | current_age < age_at_onset)
+  filter(is.na(age_at_onset) | current_age < age_at_onset)
 ```
+
+The import process involved `reading the data`, `using skip = 1` to skip the first line which is about description, `ensuring data types are correct`, especially for categorical variables, and `filtering out participants that don't meet the inclusion criteria`.
+The baseline dataset had a total of `r nrow(baseline)` participants, of which `r filter(baseline, age_at_onset != ".") |> nrow()` developed MCI.
+The average baseline age was `r count(filter(baseline, apoe4 == "carrier" & sex == "female")) / count(filter(baseline, sex == "female"))* 100` of the women in the study were APOE4 carriers.
+After combining the datasets, only participants present in both datasets were retained.
+
+# Import and clean the longitudinal biomarker dataset
+
+```{r}
+mci_amyloid <- read_csv("data_files_hw2/mci_amyloid.csv", skip = 1)
+  janitor::clean_names() %>% 
+  rename(id = study_id) %>% 
+  pivot_longer(
+    time_2:time_8,
+    values_to = "amyloid",
+    names_prefix = "time_")
+  mutate(baseline = as.numeric(baseline), 
+         amyloid = as.numeric(amyloid),
+         time = case_match(time,
+                           "time_2" ~ 2,
+                           "time_4" ~ 4,
+                           "time_6" ~ 6,
+                           "time_8" ~ 8),
+         time = as.numeric(time)) %>%
+  drop_na(baseline)
+```
+

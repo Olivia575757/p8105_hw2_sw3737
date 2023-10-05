@@ -76,11 +76,22 @@ mtw_data <- read_excel("data_files_hw2/202309 Trash Wheel Collection Data.xlsx",
 
 # Clean Professor Trash Wheel Dataset
 ```{r Mr. Trash Wheel}
-ptw_data <- read_excel("data_files_hw2/202309 Trash Wheel Collection Data.xlsx", sheet = "Professor Trash Wheel") %>%
+ptw_data <- read_excel("data_files_hw2/202309 Trash Wheel Collection Data.xlsx", sheet = "Professor Trash Wheel", range = "A2:M108") %>%
   janitor::clean_names() %>%
   drop_na(dumpster) %>%
   mutate(
     homes_powered = (500 * weight_tons)/30,
     wheel_name = "Professor Trash Wheel"
+  )
+```
+
+# Clean Gwynnda Trash Wheel Dataset
+```{r Mr. Trash Wheel}
+gwynnda_data <- read_excel("data_files_hw2/202309 Trash Wheel Collection Data.xlsx", sheet = "Gwynnda Trash Wheel", range = "A2:L157") %>%
+  janitor::clean_names() %>%
+  drop_na(dumpster) %>%
+  mutate(
+    homes_powered = (500 * weight_tons)/30,
+    wheel_name = "Gwynnda Trash Wheel"
   )
 ```

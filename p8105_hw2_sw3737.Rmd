@@ -62,13 +62,25 @@ The merged dataset, merged_data, seamlessly combines data from all three sources
 
 ## Problem 2
 
+# Clean Mr. Trash Wheel dataset
+
 ```{r Mr. Trash Wheel}
 mtw_data <- read_excel("data_files_hw2/202309 Trash Wheel Collection Data.xlsx", sheet = "Mr. Trash Wheel",range = "A2:N586") %>%
   janitor::clean_names() %>%
   drop_na(dumpster) %>%
   mutate(
     homes_powered = (500 * weight_tons)/30,
-    wheel_name = "Mr"
+    wheel_name = "Mr. Trash Wheel"
   )
 ```
 
+# Clean Professor Trash Wheel Dataset
+```{r Mr. Trash Wheel}
+ptw_data <- read_excel("data_files_hw2/202309 Trash Wheel Collection Data.xlsx", sheet = "Professor Trash Wheel") %>%
+  janitor::clean_names() %>%
+  drop_na(dumpster) %>%
+  mutate(
+    homes_powered = (500 * weight_tons)/30,
+    wheel_name = "Professor Trash Wheel"
+  )
+```

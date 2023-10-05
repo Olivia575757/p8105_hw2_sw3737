@@ -1,11 +1,14 @@
 ---
 title: "p8105_hw2_sw3737"
+author: "Shiqi Wu"
 output: github_document
 date: "2023-10-04"
 ---
 
-```{r setup, message=FALSE}
+```{r setup}
 library(tidyverse)
+library(readxl)
+library(dplyr)
 ```
 
 ## Problem 1
@@ -56,3 +59,16 @@ snp.csv: This dataset tracks the `closing values of the Standard & Poor’s stoc
 unemployment.csv: This dataset focuses on `unemployment rates`, segmented by month, over multiple years. This offers a view into the country's economic health and labor market trends.
 
 The merged dataset, merged_data, seamlessly combines data from all three sources, linking them by year and month. With columns indicating `political distribution`, `stock market performance`, and `unemployment rates`, this dataset provides a comprehensive overview, facilitating an in-depth analysis of interrelationships between politics, the stock market, and unemployment.
+
+## Problem 2
+
+```{r Mr. Trash Wheel}
+mtw_data <- read_excel("data_files_hw2/202309 Trash Wheel Collection Data.xlsx", sheet = "Mr. Trash Wheel",range = "A2:N586") %>%
+  janitor::clean_names() %>%
+  drop_na(dumpster) %>%
+  mutate(
+    homes_powered = (500 * weight_tons)/30,
+    wheel_name = "Mr"
+  )
+```
+

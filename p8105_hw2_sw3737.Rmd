@@ -105,4 +105,22 @@ trashwheel_df = bind_rows(mtw_data, ptw_data, gwynnda_data) |> select(wheel_name
 
 # Data description
 
-The Trash Wheel dataset consists of observations from three unique Trash Wheels: Mr. Trash Wheel, Professor Trash Wheel, and Gwynnda. The combined dataset has a total of `845 observations` and `15 variables`, capturing various attributes, including `wheel_name`, `dumpster`, `month`, `year`, `date`, `weight_tons`, `volume_cubic_yard`, `plastic_bottles`, `polystyrene`, `cigarette_butts`, `glass_bottles`, `plastic_bags`, `wrappers`, `sports_balls`, and `home_powered`. A total weight of `216.26 tons of trash` was collected by Professor Trash Wheel. Gwynnda collected a total of `1.63^{4} cigarette butts` in July of 2021.
+The Trash Wheel dataset consists of observations from three unique Trash Wheels: Mr. Trash Wheel, Professor Trash Wheel, and Gwynnda. The combined dataset has a total of `r nrow(trashwheel_df)` observations and `r ncol(trashwheel_df)` variables, capturing various attributes, including `wheel_name`, `dumpster`, `month`, `year`, `date`, `weight_tons`, `volume_cubic_yard`, `plastic_bottles`, `polystyrene`, `cigarette_butts`, `glass_bottles`, `plastic_bags`, `wrappers`, `sports_balls`, and `home_powered`. A total weight of `r sum(ptw_data$weight_tons)` tons trash was collected by Professor Trash Wheel. Gwynnda collected a total of `r gwynnda_data%>%filter(month == 'July'&year == 2021)%>%summarize(sum = sum(cigarette_butts))%>%sum)` cigarette butts in July of 2021.
+
+## Problem 3
+
+# Importing and cleaning the baseline demographics dataset
+
+```{r}
+baseline <- read.csv("data_files_hw2/MCI_baseline.csv") %>%
+  janitor::clean_names() %>%
+  mutate(sex = case_match(sex,
+                          1 ~ "Male",
+                          0 ~ "Female"),
+         sex = as.factor(sex),
+         apoe4 = case_match(apoe4,
+                            1 ~ "APOE4 carrier",
+                            0 ~ "APOE4 non-carrier"),
+         apoe4 = as.factor(apoe4)) %>%
+  filter(age_at_onset == "." | current_age < age_at_onset)
+```
